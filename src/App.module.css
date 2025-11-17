@@ -1,0 +1,75 @@
+body {
+  margin: 0px;
+  background-color: white;
+  padding: 0px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  --color: black;
+}
+
+.canvas {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  mix-blend-mode: exclusion;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ui {
+  display: grid;
+  grid-template-rows: 1fr min-content;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 5px;
+
+  & > h1 {
+    font-weight: 300;
+    font-size: 72pt;
+  }
+}
+
+.timeControlContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.timeControl {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  font-family: 'Anonymous Pro', monospace;
+}
+
+.timeValue {
+  align-self: center;
+  font-weight: 300;
+  font-size: 64pt;
+  text-align: center;
+}
+
+.buttonContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.button {
+  border: 0px;
+  background-color: transparent;
+  color: var(--color);
+  font-size: 48pt;
+  font-family: inherit;
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}
