@@ -91,13 +91,9 @@ const App: Component = () => {
   const [config, setConfig] = createStore<{
     in: number
     out: number
-    color1: [number, number, number]
-    color2: [number, number, number]
   }>({
     in: 3.5,
     out: 5,
-    color1: [1, 1, 1],
-    color2: [0, 0, 0],
   })
   const [playing, setPlaying] = createSignal(false)
   const [phase, _setPhase] = createSignal<'in' | 'out'>('in')
@@ -140,22 +136,17 @@ precision mediump float;
 in vec2 v_uv;
 out vec4 outColor;
 ${uniform.float('u_value')}
-${uniform.vec3('u_color1')}
-${uniform.vec3('u_color2')}
 
 void main() {
   if(v_uv[1] > u_value){
-    outColor = vec4(u_color1, 1.0);
+    outColor = vec4(1.0);
   }else{
-    outColor = vec4(u_color2, 1.0);
+    discard;
   }
 }`
     const { program, view } = compile.toQuad(gl, fragment, { webgl2: true })
 
     gl.useProgram(program)
-
-    createEffect(() => view.uniforms.u_color1.set(...config.color1))
-    createEffect(() => view.uniforms.u_color2.set(...config.color2))
 
     function resize() {
       canvas.height = window.innerHeight
@@ -170,12 +161,15 @@ void main() {
     let previous: number | undefined = undefined
     let current = -1
 
-    function renderLoop() {
-      animationFrame = requestAnimationFrame(function render(time) {
-        if (!playing()) {
-          return
-        }
+    function render() {
+      view.attributes.a_quad.bind()
+      view.uniforms.u_value.set(current)
 
+      gl.drawArrays(gl.TRIANGLES, 0, 6)
+    }
+
+    function animate() {
+      animationFrame = requestAnimationFrame(function (time) {
         try {
           if (!previous) {
             return
@@ -200,20 +194,19 @@ void main() {
             }
           }
 
-          view.attributes.a_quad.bind()
-          view.uniforms.u_value.set(current)
-
-          gl.drawArrays(gl.TRIANGLES, 0, 6)
+          render()
         } finally {
           previous = time
-          requestAnimationFrame(render)
+          animate()
         }
       })
     }
 
+    render()
+
     createEffect(() => {
       if (playing()) {
-        renderLoop()
+        animate()
       } else {
         previous = undefined
         cancelAnimationFrame(animationFrame)
