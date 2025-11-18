@@ -160,17 +160,11 @@ void main() {
   return (
     <>
       <div class={styles.ui}>
-        <div
-          style={{
-            'z-index': 1,
-            position: 'fixed',
-            transform: 'translate(-50%, -50%)',
-            top: '50vh',
-            left: '50vw',
-            color: 'white',
-          }}
-        >
-          <button class={clsx(styles.button, styles.icon)} onClick={() => setPlaying(p => !p)}>
+        <div class={styles.playButtonContainer}>
+          <button
+            class={clsx(styles.button, styles.playButton)}
+            onClick={() => setPlaying(p => !p)}
+          >
             <Show when={playing()} fallback={<AiFillPlayCircle />}>
               <AiOutlinePause />
             </Show>

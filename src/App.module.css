@@ -29,6 +29,11 @@ body {
   color: white;
 }
 
+.playButton > svg {
+  width: 75px;
+  height: 75px;
+}
+
 .panel {
   display: grid;
   grid-template-rows: 1fr min-content;
@@ -83,8 +88,11 @@ body {
     opacity: 0.5;
   }
 }
-
-.icon > svg {
-  width: 75px;
-  height: 75px;
+.playButtonContainer {
+  position: fixed;
+  top: 50dvh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  color: white;
 }
