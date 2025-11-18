@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import solidPlugin from 'vite-plugin-solid';
 
 export default defineConfig({
+  base: './',
   plugins: [
     VitePWA({
       registerType: 'autoUpdate', devOptions: {
