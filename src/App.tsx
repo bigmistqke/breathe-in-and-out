@@ -3,16 +3,56 @@ import clsx from 'clsx'
 import { AiFillPlayCircle, AiOutlinePause } from 'solid-icons/ai'
 import {
   createEffect,
+  createMemo,
   createSelector,
   createSignal,
   For,
+  on,
   onMount,
+  Setter,
   Show,
   type Component,
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import styles from './App.module.css'
 import './index.css'
+
+function createAudioApi() {
+  const context = new AudioContext()
+
+  function envelope(
+    gainNode: GainNode,
+    attack: number,
+    decay: number,
+    sustain: number,
+    release: number,
+  ) {
+    const now = context.currentTime
+    gainNode.gain.cancelScheduledValues(0)
+    gainNode.gain.setValueAtTime(0, now)
+    gainNode.gain.linearRampToValueAtTime(1, now + attack)
+    gainNode.gain.linearRampToValueAtTime(sustain, now + attack + decay)
+    gainNode.gain.linearRampToValueAtTime(0, now + attack + decay + release)
+  }
+
+  return {
+    play(frequency: number) {
+      // create Oscillator node
+      const gainNode = new GainNode(context, { gain: 0 })
+      gainNode.gain
+      gainNode.connect(context.destination)
+      envelope(gainNode, 0, 0.25, 0.25, 0.25)
+
+      const oscillator = context.createOscillator()
+      oscillator.type = 'sine'
+      oscillator.frequency.setValueAtTime(frequency, context.currentTime) // value in hertz
+      oscillator.start()
+      oscillator.connect(gainNode)
+
+      setTimeout(() => oscillator.stop(), 1_000)
+    },
+  }
+}
 
 function TimeControl(props: {
   class?: string
@@ -47,19 +87,36 @@ function TimeControl(props: {
 const App: Component = () => {
   let canvas: HTMLCanvasElement = null!
 
+  const [count, setCount] = createSignal(0)
   const [config, setConfig] = createStore<{
     in: number
     out: number
     color1: [number, number, number]
     color2: [number, number, number]
   }>({
-    in: 3,
+    in: 3.5,
     out: 5,
     color1: [1, 1, 1],
     color2: [0, 0, 0],
   })
   const [playing, setPlaying] = createSignal(false)
-  const [phase, setPhase] = createSignal<'in' | 'out'>('in')
+  const [phase, _setPhase] = createSignal<'in' | 'out'>('in')
+
+  const setPhase: Setter<'in' | 'out'> = newPhase => {
+    _setPhase(newPhase)
+    if (newPhase === 'in') {
+      setCount(count => count + 1)
+    }
+    audioApi()?.play(
+      isPhaseSelected('in')
+        ? // C2
+          130.81
+        : // G#3
+          207.65,
+    )
+  }
+
+  const audioApi = createMemo(on(playing, createAudioApi, { defer: true }))
 
   const isPhaseSelected = createSelector(phase)
   const direction = () => (isPhaseSelected('in') ? 1 : -1)
@@ -169,7 +226,7 @@ void main() {
   return (
     <>
       <div class={styles.ui}>
-        <div class={styles.playButtonContainer}>
+        <div class={styles.center}>
           <button
             class={clsx(styles.button, styles.playButton)}
             onClick={() => setPlaying(p => !p)}
@@ -178,6 +235,9 @@ void main() {
               <AiOutlinePause />
             </Show>
           </button>
+          <span>
+            <Show when={count() > 0}>{count()}</Show>
+          </span>
         </div>
         <section
           class={clsx(

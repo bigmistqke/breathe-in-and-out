@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@bigmistqke/solid-whenever':
+        specifier: ^0.1.1
+        version: 0.1.1(solid-js@1.9.9)
       '@bigmistqke/view.gl':
         specifier: ^0.1.9
         version: 0.1.9
@@ -583,6 +586,12 @@ packages:
   '@babel/types@7.28.5':
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
+
+  '@bigmistqke/solid-whenever@0.1.1':
+    resolution: {integrity: sha512-BhAtrauFOsYsNVhoNV93CPNIcj++R3tPzCok4eWB6BVCYVPedHGDtvqlUcAvftt67bOq9yAkF8DSJMjx3zfYeQ==}
+    engines: {node: '>=18', pnpm: '>=9.0.0'}
+    peerDependencies:
+      solid-js: ^1.6.0
 
   '@bigmistqke/view.gl@0.1.9':
     resolution: {integrity: sha512-Xxi6EHwNRwLSmKEtTCDAjlmA9Q9MxVznXfZ73mIcXD/1zTVuV4z8ycVYCNW2w+1TDqXtUYuvv2H1+crf+VV9GA==}
@@ -2761,6 +2770,10 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
+
+  '@bigmistqke/solid-whenever@0.1.1(solid-js@1.9.9)':
+    dependencies:
+      solid-js: 1.9.9
 
   '@bigmistqke/view.gl@0.1.9': {}
 

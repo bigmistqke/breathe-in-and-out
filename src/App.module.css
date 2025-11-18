@@ -29,13 +29,18 @@ body {
   color: white;
 }
 
-.playButtonContainer {
+.center {
+  display: grid;
   position: fixed;
   top: 50dvh;
   left: 50vw;
+  grid-template-rows: 1fr 15px;
+  gap: 10px;
   transform: translate(-50%, -50%);
   z-index: 1;
   color: white;
+  font-family: 'Anonymous Pro', monospace;
+  text-align: center;
 }
 
 .playButton > svg {
@@ -46,7 +51,7 @@ body {
 .panel {
   display: grid;
   grid-template-rows: 1fr 125px;
-  opacity: 0.5;
+  opacity: 0.75;
   transition: opacity 0.5s;
   box-sizing: border-box;
   padding-inline: 10px;
@@ -99,7 +104,7 @@ body {
   font-family: inherit;
 
   &.disabled {
-    opacity: 0.5;
+    opacity: 0.75;
   }
 
   &:focus-visible {
