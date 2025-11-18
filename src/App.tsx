@@ -170,7 +170,7 @@ void main() {
             </Show>
           </button>
         </div>
-        <section class={clsx(styles.panel, phase() === 'in' && styles.selected)}>
+        <section class={clsx(styles.panel, (phase() === 'in' || !playing()) && styles.selected)}>
           <h1 class={styles.panelTitle}>IN</h1>
           <TimeControl
             value={config.in}
@@ -178,7 +178,7 @@ void main() {
             onIncrement={() => setConfig('in', v => v + 0.5)}
           />
         </section>
-        <section class={clsx(styles.panel, phase() === 'out' && styles.selected)}>
+        <section class={clsx(styles.panel, (phase() === 'out' || !playing()) && styles.selected)}>
           <h1 class={styles.panelTitle}>OUT</h1>
           <TimeControl
             value={config.out}
