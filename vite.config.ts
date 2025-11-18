@@ -1,5 +1,5 @@
 import devtools from 'solid-devtools/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import solidPlugin from 'vite-plugin-solid';
 
@@ -11,7 +11,8 @@ export default defineConfig({
       manifest: {
         display: 'standalone',
         icons: [{
-          "src": "assets/icon.svg"
+          src: "assets/icon-black.svg",
+          sizes: "all"
         }]
       },
       devOptions: {
