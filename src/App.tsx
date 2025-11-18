@@ -55,12 +55,27 @@ function createAudioApi() {
   }
 }
 
-function TimeControl(props: {
-  class?: string
-  value: number
-  onDecrement(): void
-  onIncrement(): void
-}) {
+function TimeControl(props: { class?: string; value: number; onInput(delta: number): void }) {
+  function handleInput(delta: number) {
+    if (delta < 0) {
+      if (props.value - delta > 0) {
+        props.onInput(delta)
+      }
+    } else {
+      if (props.value - delta < 100) {
+        props.onInput(delta)
+      }
+    }
+  }
+
+  function handleClick(delta: number) {
+    handleInput(delta)
+    let next = setInterval(() => handleInput(delta), 1_000 / 3)
+    window.addEventListener('pointerup', () => {
+      clearInterval(next)
+    })
+  }
+
   return (
     <div class={clsx(styles.timeControl, props.class)}>
       <div>
@@ -69,14 +84,14 @@ function TimeControl(props: {
       <div>
         <button
           class={clsx(styles.button, props.value > 0.5 ? false : styles.disabled)}
-          onClick={() => (props.value > 0.5 ? props.onDecrement() : undefined)}
+          onPointerDown={() => handleClick(-0.5)}
         >
           &minus;
         </button>
         <div />
         <button
           class={clsx(styles.button, props.value < 99.5 ? false : styles.disabled)}
-          onClick={() => (props.value < 99.5 ? props.onIncrement() : undefined)}
+          onPointerDown={() => handleClick(0.5)}
         >
           +
         </button>
@@ -103,9 +118,6 @@ function Overlay(props: { value: number }) {
 }
 
 const App: Component = () => {
-  const [value, setValue] = createSignal(0)
-  const [sessionCount, setSessionCount] = createSignal(0)
-  const [breatheCount, setBreatheCount] = createSignal(0)
   const [config, setConfig] = createStore<{
     in: number
     out: number
@@ -113,8 +125,14 @@ const App: Component = () => {
     in: 3.5,
     out: 5,
   })
+  const [value, setValue] = createSignal(0)
+  const [sessionCount, setSessionCount] = createSignal(0)
+  const [breatheCount, setBreatheCount] = createSignal(0)
   const [playing, setPlaying] = createSignal(false)
   const [phase, _setPhase] = createSignal<'in' | 'out'>('in')
+  const audioApi = createMemo(on(playing, createAudioApi, { defer: true }))
+  const isPhaseSelected = createSelector(phase)
+  const direction = () => (isPhaseSelected('in') ? 1 : -1)
 
   function setPhase(newPhase: 'in' | 'out') {
     batch(() => {
@@ -136,11 +154,6 @@ const App: Component = () => {
       }
     })
   }
-
-  const audioApi = createMemo(on(playing, createAudioApi, { defer: true }))
-
-  const isPhaseSelected = createSelector(phase)
-  const direction = () => (isPhaseSelected('in') ? 1 : -1)
 
   function setup() {
     let animationFrame: number
@@ -207,11 +220,7 @@ const App: Component = () => {
           )}
         >
           <h1 class={styles.panelTitle}>in</h1>
-          <TimeControl
-            value={config.in}
-            onDecrement={() => setConfig('in', v => v - 0.5)}
-            onIncrement={() => setConfig('in', v => v + 0.5)}
-          />
+          <TimeControl value={config.in} onInput={delta => setConfig('in', v => v + delta)} />
         </section>
         <section
           class={clsx(
@@ -222,11 +231,7 @@ const App: Component = () => {
           )}
         >
           <h1 class={styles.panelTitle}>out</h1>
-          <TimeControl
-            value={config.out}
-            onDecrement={() => setConfig('out', v => v - 0.5)}
-            onIncrement={() => setConfig('out', v => v + 0.5)}
-          />
+          <TimeControl value={config.out} onInput={delta => setConfig('out', v => v + delta)} />
         </section>
       </div>
       <Overlay value={value()} />
