@@ -209,46 +209,46 @@ export function App() {
 
   return (
     <>
-      <div class={styles.ui}>
-        <div class={styles.center}>
-          <button
-            class={clsx(styles.button, styles.playButton)}
-            onClick={() => setMode(() => (isModeSelected('playing') ? 'paused' : 'playing'))}
-          >
-            <Show when={isModeSelected('playing')} fallback={<AiFillPlayCircle />}>
-              <AiOutlinePause />
-            </Show>
-          </button>
-          <span>
-            <Switch>
-              <Match when={isModeSelected('completed')}>Session Completed</Match>
-              <Match when={isModeSelected('paused')}>{BREATHES_PER_SESSION - count()} to go</Match>
-            </Switch>
-          </span>
-        </div>
-        <section
+      <section class={styles.header}>
+        <h1
           class={clsx(
-            styles.panel,
-            styles.in,
-            isModeSelected('playing') && styles.playing,
+            styles.panelTitle,
             isPhaseSelected('in') && styles.selected,
-          )}
-        >
-          <h1 class={styles.panelTitle}>in</h1>
-          <TimeControl value={config.in} onInput={delta => setConfig('in', v => v + delta)} />
-        </section>
-        <section
-          class={clsx(
-            styles.panel,
-            styles.out,
             isModeSelected('playing') && styles.playing,
-            isPhaseSelected('out') && styles.selected,
           )}
         >
-          <h1 class={styles.panelTitle}>out</h1>
-          <TimeControl value={config.out} onInput={delta => setConfig('out', v => v + delta)} />
-        </section>
-      </div>
+          in
+        </h1>
+        <h1
+          class={clsx(
+            styles.panelTitle,
+            isPhaseSelected('out') && styles.selected,
+            isModeSelected('playing') && styles.playing,
+          )}
+        >
+          out
+        </h1>
+      </section>
+      <section class={styles.center}>
+        <button
+          class={clsx(styles.button, styles.playButton)}
+          onClick={() => setMode(() => (isModeSelected('playing') ? 'paused' : 'playing'))}
+        >
+          <Show when={isModeSelected('playing')} fallback={<AiFillPlayCircle />}>
+            <AiOutlinePause />
+          </Show>
+        </button>
+        <span>
+          <Switch>
+            <Match when={isModeSelected('completed')}>Session Completed</Match>
+            <Match when={isModeSelected('paused')}>{BREATHES_PER_SESSION - count()} to go</Match>
+          </Switch>
+        </span>
+      </section>
+      <section class={styles.footer}>
+        <TimeControl value={config.in} onInput={delta => setConfig('in', v => v + delta)} />
+        <TimeControl value={config.out} onInput={delta => setConfig('out', v => v + delta)} />
+      </section>
       <Overlay value={value()} />
     </>
   )
