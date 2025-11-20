@@ -12,8 +12,11 @@ body {
   width: 100vw;
   height: 100dvh;
   overflow: hidden;
-  font-size: 16pt;
   font-family: 'Inter', sans-serif;
+  --color-white: #eaeaea;
+  --color-light: #a0a0ff;
+  --color-dark: rgb(14 14 89);
+  --color-overlay-filter: rgb(82 82 154);
 }
 
 .overlayFilter {
@@ -22,20 +25,20 @@ body {
   left: 0px;
   z-index: 3;
   mix-blend-mode: hard-light;
-  background-color: rgb(66 66 165);
+  background-color: var(--color-overlay-filter);
   width: 100%;
   height: 100%;
   pointer-events: none;
 }
 
 .overlay {
-  background-color: white;
+  background-color: var(--color-white);
   width: 100vw;
   height: 100dvh;
 }
 
 .overlayBar {
-  fill: #1b1b1c;
+  fill: black;
 }
 
 .button {
@@ -69,13 +72,12 @@ body {
   position: fixed;
   top: 50dvh;
   left: 50vw;
-  grid-template-rows: 1fr 15px;
-  gap: 10px;
   transform: translate(-50%, -50%);
   z-index: 2;
   mix-blend-mode: difference;
+  width: 100vw;
   color: white;
-  font-family: 'Anonymous Pro', monospace;
+  letter-spacing: 0.125em;
   text-align: center;
 }
 
@@ -94,11 +96,6 @@ body {
   color: white;
 }
 
-.playButton > svg {
-  width: 40px;
-  height: 40px;
-}
-
 .header,
 .footer {
   display: flex;
@@ -106,39 +103,61 @@ body {
   right: 0px;
   left: 0px;
   justify-content: space-between;
-  gap: 20px;
-  mix-blend-mode: exclusion;
+  align-items: start;
+  gap: 15px;
   transition: opacity 0.5s;
   box-sizing: border-box;
   margin-inline: 20px;
   color: white;
 }
 
-.footer {
-  bottom: 0px;
+.header {
+  mix-blend-mode: exclusion;
+
+  & > h1 {
+    filter: blur(7px);
+    transition: filter 0.75s;
+    font-weight: 300;
+    font-size: 72pt;
+
+    &:not(.playing),
+    &.selected {
+      filter: blur(0px);
+    }
+  }
 }
 
-.panelTitle {
-  filter: blur(7px);
-  transition: filter 0.75s;
-  font-weight: 300;
-  font-size: 72pt;
+.footer {
+  bottom: 0px;
+  z-index: 1;
+  pointer-events: none;
+}
 
-  &:not(.playing),
-  &.selected {
-    filter: blur(0px);
+.playButton {
+  width: 46px;
+  height: 46px;
+  pointer-events: all;
+
+  & > svg {
+    margin-block: -2px;
+    width: 46px;
+    height: 46px;
+    color: var(--color-white);
   }
 }
 
 .timeControl {
   position: relative;
   margin-block-end: 20px;
-  border: 1px solid rgb(130, 130, 130);
+  border: 1px solid black;
   border-radius: 50px;
-  width: 200px;
+  background-color: var(--color-white);
+  width: 175px;
   max-width: 100%;
   height: 40px;
   overflow: hidden;
+  pointer-events: all;
+  color: black;
 
   & > .top {
     display: flex;
@@ -177,4 +196,9 @@ body {
     grid-template-columns: 1fr 1fr;
     height: 100%;
   }
+}
+
+.hidden {
+  visibility: hidden;
+  pointer-events: none;
 }

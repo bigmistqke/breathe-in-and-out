@@ -220,7 +220,6 @@ export function App() {
       <section class={styles.header}>
         <h1
           class={clsx(
-            styles.panelTitle,
             isPhaseSelected('in') && styles.selected,
             isModeSelected('playing') && styles.playing,
           )}
@@ -229,7 +228,6 @@ export function App() {
         </h1>
         <h1
           class={clsx(
-            styles.panelTitle,
             isPhaseSelected('out') && styles.selected,
             isModeSelected('playing') && styles.playing,
           )}
@@ -238,6 +236,15 @@ export function App() {
         </h1>
       </section>
       <section class={styles.center}>
+        <Switch>
+          <Match when={isModeSelected('completed')}>exercise completed</Match>
+          <Match when={isModeSelected('paused')}>
+            {count()} of {BREATHES_PER_SESSION} breathes
+          </Match>
+        </Switch>
+      </section>
+      <section class={styles.footer} style={{ 'mix-blend-mode': 'exclusion' }}>
+        <div class={clsx(styles.timeControl, styles.hidden)} />
         <button
           class={clsx(styles.button, styles.playButton)}
           onClick={() => setMode(() => (isModeSelected('playing') ? 'paused' : 'playing'))}
@@ -246,15 +253,11 @@ export function App() {
             <AiOutlinePause />
           </Show>
         </button>
-        <span>
-          <Switch>
-            <Match when={isModeSelected('completed')}>Session Completed</Match>
-            <Match when={isModeSelected('paused')}>{BREATHES_PER_SESSION - count()} to go</Match>
-          </Switch>
-        </span>
+        <div class={clsx(styles.timeControl, styles.hidden)} />
       </section>
-      <section class={styles.footer}>
+      <section class={styles.footer} style={{ 'z-index': 2 }}>
         <TimeControl value={config.in} onInput={delta => setConfig('in', v => v + delta)} />
+        <div class={clsx(styles.button, styles.playButton, styles.hidden)} />
         <TimeControl value={config.out} onInput={delta => setConfig('out', v => v + delta)} />
       </section>
       <Overlay value={value()} />
